@@ -1,10 +1,10 @@
-# [Your Game Title] API
+Campus Escape API
 
-Backend API for **[Your Game Title]**, a tournament game for the SorSU Bulan Campus library.
+Backend API for Campus Escape, a tournament game for the SorSU Bulan Campus library.
 CS 313 Software Engineering 1, A.Y. 2026-2027.
 
-- Developer: [Your full name] ([your GitHub username]), BSCS [3-1 or 3-2]
-- Group and game concept: [Group name]
+- Developer: Gian Fortes Reyes (gianreyes068-cyber), BSCS 3-2
+- Group and game concept: Group 6
 
 This is my own build of my group's game concept. Every commit in this repository was made by me, with Git, on my own computer or in my own Codespace.
 
@@ -64,7 +64,14 @@ Base URL: `http://localhost:3001/api/v1`
 
 ## Tables
 
-[List your tables, one line each, in the order of your migrations.]
+- `users` — user accounts with generated school IDs.
+- `question_sets` — quiz sets owned by users.
+- `questions` — questions in each quiz set and their correct choice indexes.
+- `question_choices` — answer choices belonging to questions.
+- `sessions` — game sessions with join codes and start/end times.
+- `seats` — players in a session, with nicknames, scores, and progress.
+- `answers` — each player's submitted choice and whether it was correct.
+- `reward_claims` — mystery-box rewards claimed during a session.
 
 ## Database scripts
 
