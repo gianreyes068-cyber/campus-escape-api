@@ -8,6 +8,14 @@ const demoEmails = [
   'unused@campusescape.test',
 ];
 
+const demoFullNames = [
+  'Game Host',
+  'Mia',
+  'Noe',
+  'Luz',
+  'Unused Demo User',
+];
+
 // Demo-only bcrypt hash for the word "password".
 const demoPasswordHash =
   '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy';
@@ -18,8 +26,10 @@ module.exports = {
 
     await queryInterface.bulkInsert(
       'users',
-      demoEmails.map((email) => ({
+      demoEmails.map((email, index) => ({
         email,
+        full_name: demoFullNames[index],
+        role: index === 0 ? 'host' : 'player',
         password_hash: demoPasswordHash,
         created_at: now,
       }))

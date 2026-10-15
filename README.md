@@ -60,11 +60,11 @@ Base URL: `http://localhost:3001/api/v1`
 
 ## What "completed" means in my game
 
-[One or two sentences: when does a player count as having completed a game? For example: "A player completed the game when they answered every question, even if some answers were wrong or timed out."]
+A player is marked completed after submitting an answer to every question in that session's question set. Correctness does not affect completion; unanswered questions do.
 
 ## Tables
 
-- `users` — user accounts with generated school IDs.
+- `users` — user accounts with full names, roles, email addresses, and generated school IDs.
 - `question_sets` — quiz sets owned by users.
 - `questions` — questions in each quiz set and their correct choice indexes.
 - `question_choices` — answer choices belonging to questions.
