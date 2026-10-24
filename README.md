@@ -60,14 +60,12 @@ Base URL: `http://localhost:3001/api/v1`
 
 ## What "completed" means in my game
 
-[One or two sentences: when does a player count as having completed a game? For example: "A player completed the game when they answered every question, even if some answers were wrong or timed out."]
-
+A player completed Campus Escape by reaching the gate stage before the session ended. A player who stopped at an earlier stage did not complete the game.
 ## Tables
 
-[List your tables, one line each, in the order of your migrations.]
+users, question_sets, questions, question_choices, sessions, session_players, answers, reward_claims
 
 ## Database scripts
-
 | Command | What it does |
 |---|---|
 | npm run db:migrate | Runs migrations that have not run yet |
