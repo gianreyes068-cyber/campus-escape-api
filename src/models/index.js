@@ -11,11 +11,7 @@ const sequelize = new Sequelize(
   dbConfig
 );
 
-// Week 11: load your models here, one line each, then add their associations.
-// Example:
-//   const User = require('./user')(sequelize, DataTypes);
-//   const Player = require('./player')(sequelize, DataTypes);
-//   User.hasMany(Player, { foreignKey: 'user_id' });
-//   Player.belongsTo(User, { foreignKey: 'user_id' });
+const User = require('./user')(sequelize, DataTypes);
 
-module.exports = { sequelize, Sequelize, DataTypes };
+// Week 11: load your models here, one line each, then add their associations.
+module.exports = { sequelize, Sequelize, DataTypes, User };
