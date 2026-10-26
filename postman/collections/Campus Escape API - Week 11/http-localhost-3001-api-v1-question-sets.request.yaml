@@ -1,0 +1,39 @@
+$kind: http-request
+name: " http://localhost:3001/api/v1/question-sets"
+description: ""
+url: "{{baseUrl}}/question-sets"
+method: POST
+headers:
+  X-Demo-User: "{{host}}"
+body:
+  type: json
+  content: "{\r
+
+    \  \"title\": \"Campus Escape Basics\",\r
+
+    \  \"description\": \"Demo set for testing.\",\r
+
+    \  \"subject\": \"Campus Escape\",\r
+
+    \  \"grade_level\": \"College\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status is 201\", function () {\r
+
+      \  pm.response.to.have.status(201);\r
+
+      });\r
+
+      \r
+
+      pm.collectionVariables.set(\r
+
+      \  \"setId\",\r
+
+      \  pm.response.json().question_set_id\r
+
+      );"
+    language: text/javascript
+order: 1000
