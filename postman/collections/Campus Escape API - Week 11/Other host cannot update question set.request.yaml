@@ -1,0 +1,29 @@
+$kind: http-request
+url: "{{baseUrl}}/question-sets/{{setId}}"
+method: PATCH
+headers:
+  X-Demo-User: "{{otherHost}}"
+body:
+  type: json
+  content: "{\r
+
+    \  \"title\": \"Unauthorized Change\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status is 403\", function () {\r
+
+      \  pm.response.to.have.status(403);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Error is forbidden\", function () {\r
+
+      \  pm.expect(pm.response.json().error.code).to.eql(\"FORBIDDEN\");\r
+
+      });"
+    language: text/javascript
+order: 11000

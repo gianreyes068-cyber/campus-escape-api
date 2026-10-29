@@ -1,0 +1,35 @@
+$kind: http-request
+name: Host lists question sets.
+url: "{{baseUrl}}/question-sets"
+method: GET
+headers:
+  X-Demo-User: "{{host}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status is 200\", function () {\r
+
+      \  pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Response is a list containing the created set\", function () {\r
+
+      \  const sets = pm.response.json();\r
+
+      \  pm.expect(sets).to.be.an(\"array\");\r
+
+      \r
+
+      \  const setId = String(pm.collectionVariables.get(\"setId\"));\r
+
+      \  pm.expect(\r
+
+      \    sets.some((set) => String(set.question_set_id) === setId)\r
+
+      \  ).to.be.true;\r
+
+      });"
+    language: text/javascript
+order: 6000
