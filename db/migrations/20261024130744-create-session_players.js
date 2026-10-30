@@ -9,49 +9,70 @@ module.exports = {
         autoIncrement: true,
         allowNull: false,
       },
+
       session_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: 'sessions', key: 'session_id' },
+        references: {
+          model: 'sessions',
+          key: 'session_id',
+        },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
+
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: 'users', key: 'user_id' },
+        references: {
+          model: 'users',
+          key: 'user_id',
+        },
         onUpdate: 'CASCADE',
         onDelete: 'RESTRICT',
       },
+
       nickname: {
         type: Sequelize.STRING(20),
         allowNull: false,
       },
+
       score: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
       },
+
       current_stage: {
         type: Sequelize.STRING(24),
         allowNull: false,
         defaultValue: 'campus',
       },
+
       time_penalty_sec: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
       },
+
       token_expires_at: {
         type: Sequelize.DATE,
         allowNull: true,
       },
     });
 
+    // Existing rejoin constraint
     await queryInterface.addConstraint('session_players', {
       type: 'unique',
       name: 'uq_session_players_session_user',
       fields: ['session_id', 'user_id'],
+    });
+
+    // NEW: Prevent duplicate nicknames in the same session
+    await queryInterface.addConstraint('session_players', {
+      type: 'unique',
+      name: 'uq_session_players_nickname',
+      fields: ['session_id', 'nickname'],
     });
 
     await queryInterface.sequelize.query(`
