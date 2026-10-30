@@ -10,4 +10,10 @@
 //   },
 //
 // A constraint that is not listed here still answers 409, with the code CONFLICT.
-module.exports = {};
+module.exports = {
+  sessions_question_set_id_fkey: {
+    status: 409,
+    code: 'QUESTION_SET_IN_USE',
+    message: 'This question set cannot be deleted because a session uses it.',
+  },
+};

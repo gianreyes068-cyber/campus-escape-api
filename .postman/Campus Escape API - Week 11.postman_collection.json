@@ -470,7 +470,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"Status is 204\", function () {\r\n  pm.response.to.have.status(204);\r\n});"
+              "pm.test(\"Question set in use returns 409\", function () {\r\n  pm.response.to.have.status(409);\r\n  pm.expect(pm.response.json().error.code).to.eql(\"QUESTION_SET_IN_USE\");\r\n});"
             ]
           }
         }
