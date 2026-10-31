@@ -58,19 +58,132 @@ Base URL: `http://localhost:3001/api/v1`
 | GET | /game-info | Slug, name, group, developer, description, player limits, version | 200 |
 | GET | /results | Finished games, every player, and the top 3. Needs the `X-Hub-Key` header. Optional `?since=` | 200 (401 without the key) |
 
+# Module 1 - Question Sets
+
+| Method | Endpoint | Who May Call |
+|----------|----------|----------|
+| GET | /api/v1/question-sets | HOST, ADMIN |
+| POST | /api/v1/question-sets | HOST, ADMIN |
+| GET | /api/v1/question-sets/:id | HOST, ADMIN |
+| PATCH | /api/v1/question-sets/:id | HOST, ADMIN |
+| DELETE | /api/v1/question-sets/:id | HOST, ADMIN |
+
+# Module 2 — Sessions and Joining
+
+| Method | Endpoint | Who May Call |
+|----------|----------|----------|
+| POST | /api/v1/sessions | HOST, ADMIN |
+| GET | /api/v1/sessions/:code | Any authenticated account |
+| PATCH | /api/v1/sessions/:code | Session host, ADMIN |
+| POST | /api/v1/sessions/:code/players | Any authenticated account |
+| GET | /api/v1/sessions/:code/players | Any authenticated account |
+
+
 ## What "completed" means in my game
 
 A player completed Campus Escape by reaching the gate stage before the session ended. A player who stopped at an earlier stage did not complete the game.
-## Tables
+
+## Database Tables
 
 users, question_sets, questions, question_choices, sessions, session_players, answers, reward_claims
 
 ## Database scripts
-| Command | What it does |
-|---|---|
-| npm run db:migrate | Runs migrations that have not run yet |
-| npm run db:migrate:status | Lists every migration as up or down |
-| npm run db:seed | Loads the seed data |
-| npm run db:check | Counts the rows in every table |
-| npm run db:reset | Empties the database, rebuilds every table and reloads the seed data |
-| npm run check | Runs the same automatic check that GitHub runs after every push |
+
+| Command | Description |
+|----------|----------|
+| npm run db:create | Create the database |
+| npm run db:migrate | Run pending migrations |
+| npm run db:migrate:status | Show migration status |
+| npm run db:seed | Load seed data |
+| npm run db:check | Verify table row counts |
+| npm run db:reset | Rebuild and reseed database |
+| npm run check | Run automated project checks |
+
+# Testing
+
+The Week 11 Postman collection is located in:
+
+```text
+postman/Campus Escape API - Week 11.postman_collection.json
+```
+
+The collection covers the required test cases for:
+
+### Module 1 - Question Sets
+
+- Create a question set (201)
+- Validation failure (400)
+- Invalid JSON (400)
+- Missing user header (401)
+- Wrong role (403)
+- Read question sets (200)
+- Read one question set (200)
+- Question set not found (404)
+- Invalid id format (400)
+- Update question set (200)
+- Update by non-owner (403)
+- Empty update request (400)
+- Delete question set (204)
+
+### Module 2 - Sessions and Joining
+
+- Host starts a session (201)
+- Player attempts to start a session (403)
+- Read a session (200)
+- Invalid session code format (400)
+- Session code not found (404)
+- Player joins a session (201)
+- Same player rejoins a session (200)
+- Duplicate nickname (409)
+- Nickname validation failure (400)
+- Host starts the game (200)
+- New player joins too late (409)
+- Invalid status transition (409)
+
+## Running the Tests
+
+Start from a clean database:
+
+```bash
+npm run db:reset
+npm run dev
+```
+
+Import the Postman collection and run the full collection.
+
+Expected result:
+
+```text
+Requests: Passed
+Failed: 0
+Errors: 0
+```
+
+# Developer Notes
+
+This project follows the layered architecture required in CS 313:
+
+- Routes
+- Validators
+- Controllers
+- Services
+- Repositories
+- Models
+
+Business rules are implemented in services.
+
+Database access is isolated in repositories.
+
+Validation is handled through express-validator.
+
+Error responses follow the format:
+
+```json
+{
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Human readable message"
+  }
+}
+```
+
