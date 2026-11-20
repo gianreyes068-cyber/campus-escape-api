@@ -8,6 +8,192 @@
   },
   "item": [
     {
+      "name": "Login - host",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Host login succeeds\", function () {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\nconst body = pm.response.json();\r\npm.expect(body.token).to.be.a(\"string\");\r\npm.collectionVariables.set(\"hostToken\", body.token);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"school_id\": \"209900000001\",\r\n  \"password\": \"CampusEscape-Week12-2026\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login - other host",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Other host login succeeds\", function () {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\nconst body = pm.response.json();\r\npm.expect(body.token).to.be.a(\"string\");\r\npm.collectionVariables.set(\"otherHostToken\", body.token);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"school_id\": \"209900000006\",\r\n  \"password\": \"CampusEscape-Week12-2026\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login - player",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Player login succeeds\", function () {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\nconst body = pm.response.json();\r\npm.expect(body.token).to.be.a(\"string\");\r\npm.collectionVariables.set(\"playerToken\", body.token);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"school_id\": \"209900000002\",\r\n  \"password\": \"CampusEscape-Week12-2026\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get my account",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"My account returns successfully\", function () {\r\n  pm.response.to.have.status(200);\r\n});\r\n\r\nconst body = pm.response.json();\r\npm.expect(body.user.school_id).to.eql(\"209900000001\");\r\npm.expect(body.user).to.not.have.property(\"password_hash\");"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{hostToken}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/me",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login rejects wrong password",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Wrong password returns 401\", function () {\r\n  pm.response.to.have.status(401);\r\n});\r\n\r\npm.test(\"Wrong password has the standard credential error\", function () {\r\n  pm.expect(pm.response.json().error.code).to.eql(\"INVALID_CREDENTIALS\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"school_id\": \"209900000001\",\r\n  \"password\": \"Wrong-Pass-2026\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
       "name": " http://localhost:3001/api/v1/question-sets",
       "event": [
         {
@@ -24,8 +210,8 @@
         "method": "POST",
         "header": [
           {
-            "key": "X-Demo-User",
-            "value": "{{host}}"
+            "key": "Authorization",
+            "value": "Bearer {{hostToken}}"
           }
         ],
         "body": {
@@ -66,8 +252,8 @@
         "method": "POST",
         "header": [
           {
-            "key": "X-Demo-User",
-            "value": "{{host}}"
+            "key": "Authorization",
+            "value": "Bearer {{hostToken}}"
           }
         ],
         "body": {
@@ -108,8 +294,8 @@
         "method": "POST",
         "header": [
           {
-            "key": "X-Demo-User",
-            "value": "{{host}}"
+            "key": "Authorization",
+            "value": "Bearer {{hostToken}}"
           },
           {
             "key": "Content-Type",
@@ -182,8 +368,8 @@
         "method": "GET",
         "header": [
           {
-            "key": "X-Demo-User",
-            "value": "{{player}}"
+            "key": "Authorization",
+            "value": "Bearer {{playerToken}}"
           }
         ],
         "url": {
@@ -199,7 +385,7 @@
       "response": []
     },
     {
-      "name": "Host lists question sets.",
+      "name": "Host lists question sets",
       "event": [
         {
           "listen": "test",
@@ -215,8 +401,8 @@
         "method": "GET",
         "header": [
           {
-            "key": "X-Demo-User",
-            "value": "{{host}}"
+            "key": "Authorization",
+            "value": "Bearer {{hostToken}}"
           }
         ],
         "url": {
@@ -248,8 +434,8 @@
         "method": "GET",
         "header": [
           {
-            "key": "X-Demo-User",
-            "value": "{{host}}"
+            "key": "Authorization",
+            "value": "Bearer {{hostToken}}"
           }
         ],
         "url": {
@@ -282,8 +468,8 @@
         "method": "GET",
         "header": [
           {
-            "key": "X-Demo-User",
-            "value": "{{host}}"
+            "key": "Authorization",
+            "value": "Bearer {{hostToken}} "
           }
         ],
         "url": {
@@ -316,8 +502,8 @@
         "method": "GET",
         "header": [
           {
-            "key": "X-Demo-User",
-            "value": "{{host}}"
+            "key": "Authorization",
+            "value": "Bearer {{hostToken}}"
           }
         ],
         "url": {
@@ -350,8 +536,8 @@
         "method": "PATCH",
         "header": [
           {
-            "key": "X-Demo-User",
-            "value": "{{host}}"
+            "key": "Authorization",
+            "value": "Bearer {{hostToken}}"
           }
         ],
         "body": {
@@ -393,8 +579,8 @@
         "method": "PATCH",
         "header": [
           {
-            "key": "X-Demo-User",
-            "value": "{{otherHost}}"
+            "key": "Authorization",
+            "value": "Bearer {{otherHostToken}}"
           }
         ],
         "body": {
@@ -436,8 +622,8 @@
         "method": "PATCH",
         "header": [
           {
-            "key": "X-Demo-User",
-            "value": "{{host}}"
+            "key": "Authorization",
+            "value": "Bearer {{hostToken}}"
           }
         ],
         "body": {
@@ -463,65 +649,546 @@
       "response": []
     },
     {
-      "name": "Host deletes question set",
-      "event": [
+      "name": "Module 2 — Sessions and Joining",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test(\"Status is 204\", function () {\r\n  pm.response.to.have.status(204);\r\n});"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "method": "DELETE",
-        "header": [
-          {
-            "key": "X-Demo-User",
-            "value": "{{host}}"
-          }
-        ],
-        "url": {
-          "raw": "{{baseUrl}}/question-sets/{{setId}}",
-          "host": [
-            "{{baseUrl}}"
+          "name": "Host creates a session",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Host creates a session\", function () {\r\n  pm.response.to.have.status(201);\r\n});\r\n\r\nconst response = pm.response.json();\r\npm.collectionVariables.set(\"code\", response.join_code);"
+                ]
+              }
+            }
           ],
-          "path": [
-            "question-sets",
-            "{{setId}}"
-          ]
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{hostToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"question_set_id\": {{setId}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sessions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sessions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get session by code",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sessions/{{code}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sessions",
+                "{{code}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid session code",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Invalid session code returns 400\", function () {\r\n  pm.response.to.have.status(400);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sessions/123",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sessions",
+                "123"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Session code not found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Unknown session code returns 404\", function () {\r\n  pm.response.to.have.status(404);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sessions/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sessions",
+                "999999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Player joins session",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Player joins the session\", function () {\r\n  pm.response.to.have.status(201);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{playerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nickname\": \"PlayerOne\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sessions/{{code}}/players",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sessions",
+                "{{code}}",
+                "players"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Same player rejoins session",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Same player can rejoin\", function () {\r\n  pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{playerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nickname\": \"PlayerOne\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sessions/{{code}}/players",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sessions",
+                "{{code}}",
+                "players"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Second account uses taken nickname",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "   pm.test(\"Taken nickname returns 409\", function () {\r\n     pm.response.to.have.status(409);\r\n   });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{otherHostToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nickname\": \"PlayerOne\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sessions/{{code}}/players",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sessions",
+                "{{code}}",
+                "players"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Nickname too short",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{otherHostToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nickname\": \"A\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sessions/{{code}}/players",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sessions",
+                "{{code}}",
+                "players"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Host starts session",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{hostToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"status\": \"playing\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sessions/{{code}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sessions",
+                "{{code}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New player joins too late",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 409\", function () {\r\n    pm.response.to.have.status(409);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{otherHostToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nickname\": \"LatePlayer\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sessions/{{code}}/players",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sessions",
+                "{{code}}",
+                "players"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid state change",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 409\", function () {\r\n    pm.response.to.have.status(409);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{hostToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"status\": \"playing\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sessions/{{code}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sessions",
+                "{{code}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Player cannot start session",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Player cannot start the session\", function () {\r\n  pm.response.to.have.status(403);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{playerToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"status\": \"playing\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sessions/{{code}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sessions",
+                "{{code}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Host deletes question set",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Question set in use returns 409\", function () {\r\n  pm.response.to.have.status(409);\r\n  pm.expect(pm.response.json().error.code).to.eql(\"QUESTION_SET_IN_USE\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{hostToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/question-sets/{{setId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "question-sets",
+                "{{setId}}"
+              ]
+            }
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     }
   ],
   "variable": [
     {
       "key": "baseUrl",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
       "key": "host",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
       "key": "otherHost",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
       "key": "player",
-      "value": "",
-      "type": "string"
+      "value": ""
     },
     {
       "key": "setId",
-      "value": "",
-      "type": "string"
+      "value": ""
+    },
+    {
+      "key": "code",
+      "value": ""
+    },
+    {
+      "key": "hostToken",
+      "value": ""
+    },
+    {
+      "key": "otherHostToken",
+      "value": ""
+    },
+    {
+      "key": "playerToken",
+      "value": ""
     }
   ]
 }

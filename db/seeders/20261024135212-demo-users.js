@@ -35,7 +35,7 @@ const DEMO_USERS = [
 
 // Demo-only bcrypt hash. Do not use for real accounts.
 const DEMO_PASSWORD_HASH =
-  '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy';
+  '$2b$10$inqH.1BRShywglb3uTbFAOfFPFVEuHLmaTRI2sRiUWcUqXfANsTOq';
 
 module.exports = {
   async up(queryInterface) {
