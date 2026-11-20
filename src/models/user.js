@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) =>
       full_name: { type: DataTypes.STRING(80), allowNull: false },
       email: { type: DataTypes.STRING(254), allowNull: false, unique: true },
       role: { type: DataTypes.STRING(24), allowNull: false },
-      password_hash: { type: DataTypes.STRING(60), allowNull: true },
+      password_hash: { type: DataTypes.STRING(255), allowNull: false },
     },
     {
       tableName: 'users',
