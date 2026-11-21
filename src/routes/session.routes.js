@@ -25,6 +25,15 @@ router.get(
   sessionController.get
 );
 
+// A signed-in player submits an answer to a question in this session.
+router.post(
+  '/:code/answers',
+  requireUser(),
+  playerRules.answerRules,
+  validate,
+  playerController.answer
+);
+
 // Only the host who owns the question set may change the session status.
 router.patch(
   '/:code',

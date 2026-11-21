@@ -24,4 +24,21 @@ async function join(req, res) {
   });
 }
 
-module.exports = { join };
+async function answer(req, res) {
+  const { code } = matchedData(req, { locations: ['params'] });
+  const { question_id: questionId, choice_index: choiceIndex } = matchedData(
+    req,
+    { locations: ['body'] }
+  );
+
+  const result = await service.answer(
+    code,
+    questionId,
+    choiceIndex,
+    req.user
+  );
+
+  res.status(201).json(result);
+}
+
+module.exports = { join, answer };

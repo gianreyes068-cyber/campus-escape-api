@@ -1,5 +1,6 @@
 const repository = require('../repositories/question-set.repository');
 const { notFound, forbidden } = require('../errors/app-error');
+const { toOffset, envelope } = require('../utils/paginate');
 
 async function findOrFail(id) {
   const questionSet = await repository.findById(id);
@@ -17,8 +18,23 @@ function assertOwner(questionSet, user) {
   }
 }
 
-function list(user) {
-  return repository.findAllByOwner(user.user_id);
+async function list(user, query = {}) {
+  const options = {
+    page: query.page || 1,
+    limit: query.limit || 10,
+    sort: query.sort || 'question_set_id',
+    order: query.order || 'asc',
+  };
+
+  const offsetOptions = toOffset(options);
+
+  const { rows, count } = await repository.findAndCountByOwner(user.user_id, {
+    ...offsetOptions,
+    sort: options.sort,
+    order: options.order,
+  });
+
+  return envelope(rows, count, options);
 }
 
 async function get(id, user) {
@@ -38,10 +54,16 @@ async function update(id, changes, user) {
   return repository.update(questionSet, changes);
 }
 
+async function setCover(id, coverUrl, user) {
+  const questionSet = await findOrFail(id);
+  assertOwner(questionSet, user);
+  return repository.update(questionSet, { cover_url: coverUrl });
+}
+
 async function remove(id, user) {
   const questionSet = await findOrFail(id);
   assertOwner(questionSet, user);
   await repository.remove(questionSet);
 }
 
-module.exports = { list, get, create, update, remove };
+module.exports = { list, get, create, update, setCover, remove };
