@@ -3,14 +3,25 @@ const controller = require('../controllers/question-set.controller');
 const rules = require('../validators/question-set.validator');
 const validate = require('../middlewares/validate');
 const requireUser = require('../middlewares/require-user');
+const uploadCover = require('../middlewares/upload-cover');
+const { pageRules, sortRules } = require('../validators/list.validator');
+
+const listRules = [
+  ...pageRules,
+  ...sortRules(['question_set_id', 'title', 'subject', 'grade_level', 'created_at']),
+];
 
 const router = Router();
 
 // Your seeded roles are lowercase: 'host' and 'player'.
 router.use(requireUser('host'));
 
-router.get('/', controller.list);
+router.get('/', listRules, validate, controller.list);
 router.post('/', rules.createRules, validate, controller.create);
+
+// Upload one cover image for a question set you own.
+router.post('/:id/cover', rules.idParam, validate, uploadCover, controller.setCover);
+
 router.get('/:id', rules.idParam, validate, controller.get);
 router.patch('/:id', rules.updateRules, validate, controller.update);
 router.delete('/:id', rules.idParam, validate, controller.remove);

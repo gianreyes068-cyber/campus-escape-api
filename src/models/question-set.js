@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) =>
       description: { type: DataTypes.TEXT, allowNull: true },
       subject: { type: DataTypes.STRING(80), allowNull: false },
       grade_level: { type: DataTypes.STRING(40), allowNull: false },
+      cover_url: { type: DataTypes.STRING(255), allowNull: true },
     },
     {
       tableName: 'question_sets',

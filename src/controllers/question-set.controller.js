@@ -8,13 +8,19 @@ function toJson(questionSet) {
     description: questionSet.description,
     subject: questionSet.subject,
     grade_level: questionSet.grade_level,
+    cover_url: questionSet.cover_url,
     created_at: questionSet.created_at,
   };
 }
 
 async function list(req, res) {
-  const questionSets = await service.list(req.user);
-  res.status(200).json(questionSets.map(toJson));
+  const query = matchedData(req, { locations: ['query'] });
+  const result = await service.list(req.user, query);
+
+  res.status(200).json({
+    data: result.data.map(toJson),
+    meta: result.meta,
+  });
 }
 
 async function get(req, res) {
@@ -36,10 +42,17 @@ async function update(req, res) {
   res.status(200).json(toJson(questionSet));
 }
 
+async function setCover(req, res) {
+  const { id } = matchedData(req, { locations: ['params'] });
+  const coverUrl = `/uploads/covers/${req.file.filename}`;
+  const questionSet = await service.setCover(id, coverUrl, req.user);
+  res.status(200).json(toJson(questionSet));
+}
+
 async function remove(req, res) {
   const { id } = matchedData(req, { locations: ['params'] });
   await service.remove(id, req.user);
   res.status(204).end();
 }
 
-module.exports = { list, get, create, update, remove };
+module.exports = { list, get, create, update, setCover, remove };
